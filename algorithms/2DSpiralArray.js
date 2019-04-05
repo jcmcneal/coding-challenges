@@ -26,64 +26,44 @@
     22 21 20 19 18 17 16 15
  */
 
-const iterate = (prev) => {
-    const dirs = {
-        'right': 'down',
-        'down': 'left',
-        'left': 'up',
-        'up': 'right',
-    };
-    const next = dirs[prev];
+const isEdge = (n, x, y, dir, map) => {
+    if (map[`${x + dir.x}-${y + dir.y}`] !== undefined) return true;
 
-    return next;
-}
-
-const isEdge = (x, y, map) => {
-    return map[`${x}-${y}`] !== undefined;
+    switch (dir.current) {
+        case 'right': return (x === n -1);
+        case 'down': return (y === n -1);
+        case 'left': return (x === 0);
+        case 'up': return (y === 0);
+    }
 }
 
 const spiral = (n) => {
-    let i = 1;
+    let i = 0;
+    let y = 0, x = 0;
     let max = n * n;
-    let dir = 'right';
+
     const map = {};
-    let loops = 0;
+    const dirs = {
+        'right': { current: 'right', next: 'down', x: 1, y: 0 },
+        'down': { current: 'down', next: 'left', x: 0, y: 1 },
+        'left': { current: 'left', next: 'up', x: -1, y: 0 },
+        'up': { current: 'up', next: 'right', x: 0, y: -1 },
+    };
+    let dir = dirs.right;
 
-    for (let y = 0, x = 0; i <= max;) {
-        loops++;
-        let edge = false;
-        if (!map[`${x}-${y}`]) map[`${x}-${y}`] = i;
+    while (i++ <= max) {
+        // Set coordinate to value
+        map[`${x}-${y}`] = i;
 
-        if (dir === 'right') {
-            edge = isEdge(x + 1, y, map);
-            if (x === n -1 || edge) dir = iterate(dir);
-            else x++;
-        }
+        // If edge change direction
+        if (isEdge(n, x, y, dir, map)) dir = dirs[dir.next];
 
-        if (dir === 'down') {
-            edge = isEdge(x, y + 1, map);
-            if (y === n -1 || edge) dir = iterate(dir);
-            else y++;
-        }
-
-        if (dir === 'left') {
-            edge = isEdge(x - 1, y, map);
-            if (x === 0 || edge) dir = iterate(dir);
-            else x--;
-        }
-
-        if (dir === 'up') {
-            edge = isEdge(x, y - 1, map);
-            if (y === 0 || edge) dir = iterate(dir);
-            else y--;
-        }
-
-        if (edge && i < max) i--;
-
-        i++;
+        // Increment x and y accordingly
+        x += dir.x;
+        y += dir.y;
     }
 
-    console.log(map, loops);
+    console.log(map);
 }
 
-spiral(3);
+spiral(4);
