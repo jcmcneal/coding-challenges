@@ -11,4 +11,6 @@ test('oneEditAway', () => {
     expect(oneEditAway('one', 'one')).toEqual(false);
     expect(oneEditAway('one', 'oe')).toEqual(true);
     expect(oneEditAway('supercool', 'supecool')).toEqual(true);
+    expect(oneEditAway('abc', 'afcc')).toEqual(false);
+    expect(oneEditAway('string', '1string')).toEqual(true);
 });
